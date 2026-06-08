@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaxiTV</string>
+    <string name="tab_channels">频道</string>
+    <string name="tab_favorites">收藏</string>
+    <string name="tab_epg">节目指南</string>
+    <string name="tab_settings">设置</string>
+    <string name="search_hint">搜索频道...</string>
+    <string name="no_channels">暂无频道</string>
+    <string name="no_favorites">暂无收藏</string>
+    <string name="no_epg">暂无节目信息</string>
+    <string name="loading">加载中...</string>
+    <string name="error_loading">加载失败</string>
+    <string name="retry">重试</string>
+    <string name="add_playlist">添加播放列表</string>
+    <string name="playlist_url">播放列表 URL</string>
+    <string name="import_from_url">从 URL 导入</string>
+    <string name="import_from_file">从文件导入</string>
+    <string name="import_success">导入成功，共 %d 个频道</string>
+    <string name="import_failed">导入失败</string>
+    <string name="favorites_add">添加收藏</string>
+    <string name="favorites_remove">取消收藏</string>
+    <string name="settings_title">设置</string>
+    <string name="settings_playlist">播放列表管理</string>
+    <string name="settings_epg">节目指南设置</string>
+    <string name="settings_player">播放器设置</string>
+    <string name="settings_about">关于</string>
+    <string name="channel_zapping">切换频道</string>
+    <string name="player_buffering">缓冲中...</string>
+    <string name="player_error">播放错误</string>
+    <string name="epg_now">正在播放</string>
+    <string name="epg_upcoming">即将播放</string>
+</resources>
