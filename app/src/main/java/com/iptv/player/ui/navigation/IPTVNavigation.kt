@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -30,8 +31,6 @@ import com.iptv.player.ui.home.HomeScreen
 import com.iptv.player.ui.player.PlayerScreen
 import com.iptv.player.ui.settings.SettingsScreen
 import com.iptv.player.ui.theme.Primary
-import com.iptv.player.ui.theme.OnBackground
-import com.iptv.player.ui.theme.SurfaceVariant
 
 sealed class Screen(
     val route: String,
@@ -67,7 +66,7 @@ fun MaxiTVNavigation() {
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar(
-                    containerColor = SurfaceVariant
+                    containerColor = MaterialTheme.colorScheme.surface
                 ) {
                     bottomNavItems.forEach { screen ->
                         NavigationBarItem(
@@ -91,9 +90,9 @@ fun MaxiTVNavigation() {
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Primary,
                                 selectedTextColor = Primary,
-                                unselectedIconColor = OnBackground.copy(alpha = 0.6f),
-                                unselectedTextColor = OnBackground.copy(alpha = 0.6f),
-                                indicatorColor = SurfaceVariant
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                indicatorColor = MaterialTheme.colorScheme.surface
                             )
                         )
                     }

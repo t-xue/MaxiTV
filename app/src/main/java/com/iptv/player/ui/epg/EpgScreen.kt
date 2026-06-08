@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,12 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.iptv.player.domain.model.EpgProgram
-import com.iptv.player.ui.theme.ChannelCardBackground
-import com.iptv.player.ui.theme.ChannelCardBorder
 import com.iptv.player.ui.theme.EpgNowPlaying
-import com.iptv.player.ui.theme.OnSurface
 import com.iptv.player.ui.theme.Primary
-import com.iptv.player.ui.theme.Surface
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -61,7 +56,7 @@ fun EpgScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Surface)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // 标题和日期选择
         Column(
@@ -70,7 +65,7 @@ fun EpgScreen(
             Text(
                 text = "节目指南",
                 style = MaterialTheme.typography.headlineMedium,
-                color = OnSurface,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold
             )
 
@@ -103,18 +98,18 @@ fun EpgScreen(
                         imageVector = Icons.Default.Tv,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
-                        tint = OnSurface.copy(alpha = 0.4f)
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                     )
                     Text(
                         text = "暂无节目信息",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = OnSurface.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         modifier = Modifier.padding(top = 16.dp)
                     )
                     Text(
                         text = "请先配置 EPG 数据源",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = OnSurface.copy(alpha = 0.4f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
@@ -156,7 +151,7 @@ private fun DateSelector(
                 modifier = Modifier
                     .clickable { onDateSelected(date) },
                 colors = CardDefaults.cardColors(
-                    containerColor = if (isSelected) Primary else ChannelCardBackground
+                    containerColor = if (isSelected) Primary else MaterialTheme.colorScheme.surface
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -167,12 +162,12 @@ private fun DateSelector(
                     Text(
                         text = if (date == today) "今天" else date.format(dayFormatter),
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (isSelected) Color.White else OnSurface.copy(alpha = 0.6f)
+                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                     Text(
                         text = date.format(dateFormatter),
                         style = MaterialTheme.typography.titleSmall,
-                        color = if (isSelected) Color.White else OnSurface,
+                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -191,7 +186,7 @@ private fun ChannelEpgCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = ChannelCardBackground
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -211,7 +206,7 @@ private fun ChannelEpgCard(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(ChannelCardBorder),
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentScale = ContentScale.Fit
                 )
 
@@ -221,14 +216,14 @@ private fun ChannelEpgCard(
                     Text(
                         text = channelEpgInfo.channel.name,
                         style = MaterialTheme.typography.titleMedium,
-                        color = OnSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Medium
                     )
                     channelEpgInfo.channel.group?.let { group ->
                         Text(
                             text = group,
                             style = MaterialTheme.typography.bodySmall,
-                            color = OnSurface.copy(alpha = 0.6f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
                     }
                 }
@@ -262,7 +257,7 @@ private fun ChannelEpgCard(
                     Text(
                         text = program.title,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = OnSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
@@ -276,7 +271,7 @@ private fun ChannelEpgCard(
                     progress = { program.getProgress() },
                     modifier = Modifier.fillMaxWidth(),
                     color = Primary,
-                    trackColor = OnSurface.copy(alpha = 0.1f)
+                    trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -284,7 +279,7 @@ private fun ChannelEpgCard(
                 Text(
                     text = program.getTimeRange(),
                     style = MaterialTheme.typography.bodySmall,
-                    color = OnSurface.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             }
         }

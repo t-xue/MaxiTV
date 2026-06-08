@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -39,7 +38,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,7 +48,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,13 +55,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.iptv.player.domain.model.Channel
-import com.iptv.player.ui.theme.Accent
-import com.iptv.player.ui.theme.ChannelCardBackground
-import com.iptv.player.ui.theme.ChannelCardBorder
 import com.iptv.player.ui.theme.FavoriteActive
-import com.iptv.player.ui.theme.OnSurface
 import com.iptv.player.ui.theme.Primary
-import com.iptv.player.ui.theme.Surface
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +85,7 @@ fun HomeScreen(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "导入播放列表",
-                    tint = OnSurface
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -102,7 +94,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Surface)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             // 搜索栏
             SearchBar(
@@ -196,7 +188,7 @@ private fun GroupChips(
                 label = { Text("全部") },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = Primary,
-                    selectedLabelColor = OnSurface
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -209,7 +201,7 @@ private fun GroupChips(
                 label = { Text(group) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = Primary,
-                    selectedLabelColor = OnSurface
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -247,7 +239,7 @@ private fun ChannelCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = ChannelCardBackground
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -264,7 +256,7 @@ private fun ChannelCard(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(ChannelCardBorder),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentScale = ContentScale.Fit
             )
 
@@ -277,7 +269,7 @@ private fun ChannelCard(
                 Text(
                     text = channel.name,
                     style = MaterialTheme.typography.titleMedium,
-                    color = OnSurface,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -287,7 +279,7 @@ private fun ChannelCard(
                     Text(
                         text = group,
                         style = MaterialTheme.typography.bodySmall,
-                        color = OnSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
 
@@ -311,7 +303,7 @@ private fun ChannelCard(
                         Icons.Default.FavoriteBorder
                     },
                     contentDescription = if (channel.isFavorite) "取消收藏" else "收藏",
-                    tint = if (channel.isFavorite) FavoriteActive else OnSurface.copy(alpha = 0.4f)
+                    tint = if (channel.isFavorite) FavoriteActive else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                 )
             }
         }
@@ -327,7 +319,7 @@ private fun EmptyState(message: String) {
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
-            color = OnSurface.copy(alpha = 0.6f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
     }
 }
@@ -358,7 +350,7 @@ private fun ImportPlaylistDialog(
             }
         },
         confirmButton = {
-            TextButton(
+            androidx.compose.material3.TextButton(
                 onClick = { onImportUrl(url) },
                 enabled = url.isNotBlank()
             ) {
@@ -366,7 +358,7 @@ private fun ImportPlaylistDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
                 Text("取消")
             }
         }

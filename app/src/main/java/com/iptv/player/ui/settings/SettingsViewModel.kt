@@ -5,10 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.iptv.player.data.repository.EpgRepository
 import com.iptv.player.data.repository.PlaylistRepository
 import com.iptv.player.domain.model.Playlist
+import com.iptv.player.ui.theme.ThemeManager
+import com.iptv.player.ui.theme.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,11 +27,20 @@ data class SettingsUiState(
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepository,
-    private val epgRepository: EpgRepository
+    private val epgRepository: EpgRepository,
+    private val themeManager: ThemeManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+
+    // 主题模式状态
+    val themeMode: StateFlow<ThemeMode> = themeManager.themeMode
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = ThemeMode.SYSTEM
+        )
 
     init {
         loadPlaylists()
@@ -38,6 +51,15 @@ class SettingsViewModel @Inject constructor(
             playlistRepository.getAllPlaylists().collect { playlists ->
                 _uiState.value = _uiState.value.copy(playlists = playlists)
             }
+        }
+    }
+
+    /**
+     * 设置主题模式
+     */
+    fun setThemeMode(mode: ThemeMode) {
+        viewModelScope.launch {
+            themeManager.setThemeMode(mode)
         }
     }
 

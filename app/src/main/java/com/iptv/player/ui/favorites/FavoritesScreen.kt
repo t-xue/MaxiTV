@@ -38,12 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.iptv.player.domain.model.Channel
-import com.iptv.player.ui.theme.ChannelCardBackground
-import com.iptv.player.ui.theme.ChannelCardBorder
 import com.iptv.player.ui.theme.FavoriteActive
-import com.iptv.player.ui.theme.OnSurface
-import com.iptv.player.ui.theme.Primary
-import com.iptv.player.ui.theme.Surface
 
 @Composable
 fun FavoritesScreen(
@@ -55,13 +50,13 @@ fun FavoritesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Surface)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // 标题
         Text(
             text = "收藏频道",
             style = MaterialTheme.typography.headlineMedium,
-            color = OnSurface,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(16.dp)
         )
@@ -84,13 +79,13 @@ fun FavoritesScreen(
                     Text(
                         text = "暂无收藏频道",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = OnSurface.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         modifier = Modifier.padding(top = 16.dp)
                     )
                     Text(
                         text = "在频道列表中点击心形图标添加收藏",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = OnSurface.copy(alpha = 0.4f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
@@ -124,7 +119,7 @@ private fun FavoriteChannelCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = ChannelCardBackground
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -141,7 +136,7 @@ private fun FavoriteChannelCard(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(ChannelCardBorder),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentScale = ContentScale.Fit
             )
 
@@ -154,7 +149,7 @@ private fun FavoriteChannelCard(
                 Text(
                     text = channel.name,
                     style = MaterialTheme.typography.titleMedium,
-                    color = OnSurface,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -164,7 +159,7 @@ private fun FavoriteChannelCard(
                     Text(
                         text = group,
                         style = MaterialTheme.typography.bodySmall,
-                        color = OnSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
             }

@@ -4,6 +4,7 @@
 
 **一个简洁、现代的 Android IPTV 播放器**
 
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/t-xue/MaxiTV/releases/tag/v1.0.0)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-green.svg)](https://developer.android.com/about/versions/oreo)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-blue.svg)](https://kotlinlang.org/)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-2024.12-purple.svg)](https://developer.android.com/jetpack/compose)
@@ -140,6 +141,14 @@ app/src/main/java/com/iptv/player/
 - Android Studio Hedgehog (2023.1.1) 或更新版本
 - JDK 17
 - Android SDK 35
+
+## 📦 版本发布
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| [v1.0.0](https://github.com/t-xue/MaxiTV/releases/tag/v1.0.0) | 2024-06-08 | 首个正式版本，包含核心播放、收藏、EPG 功能 |
+
+详细发布说明请查看 [RELEASE_NOTES.md](RELEASE_NOTES.md)
 
 ## 📝 待办事项
 
