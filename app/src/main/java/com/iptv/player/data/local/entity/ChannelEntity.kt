@@ -36,5 +36,7 @@ data class ChannelEntity(
     val tvgName: String? = null,
     val isFavorite: Boolean = false,
     val playlistId: Long,
-    val sortOrder: Int = 0
+    val sortOrder: Int = 0,
+    val userAgent: String? = null,  // 自定义 User-Agent
+    val httpReferer: String? = null  // 自定义 Referer
 )

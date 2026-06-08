@@ -61,7 +61,9 @@ class M3uParser @Inject constructor() {
                                 tvgId = info.tvgId.ifBlank { null },
                                 tvgName = info.tvgName.ifBlank { null },
                                 playlistId = playlistId,
-                                sortOrder = order++
+                                sortOrder = order++,
+                                userAgent = info.httpUserAgent.ifBlank { null },
+                                httpReferer = info.httpReferer.ifBlank { null }
                             )
                         )
                     }
@@ -82,6 +84,8 @@ class M3uParser @Inject constructor() {
         val tvgName = extractAttribute(line, "tvg-name")
         val tvgLogo = extractAttribute(line, "tvg-logo")
         val groupTitle = extractAttribute(line, "group-title")
+        val httpUserAgent = extractAttribute(line, "http-user-agent")
+        val httpReferer = extractAttribute(line, "http-referer")
 
         // 提取频道名称 (逗号后面的文本)
         val name = line.substringAfterLast(",").trim()
@@ -91,7 +95,9 @@ class M3uParser @Inject constructor() {
             tvgName = tvgName,
             tvgLogo = tvgLogo,
             groupTitle = groupTitle,
-            name = name
+            name = name,
+            httpUserAgent = httpUserAgent,
+            httpReferer = httpReferer
         )
     }
 
@@ -114,6 +120,8 @@ class M3uParser @Inject constructor() {
         val tvgName: String,
         val tvgLogo: String,
         val groupTitle: String,
-        val name: String
+        val name: String,
+        val httpUserAgent: String,
+        val httpReferer: String
     )
 }

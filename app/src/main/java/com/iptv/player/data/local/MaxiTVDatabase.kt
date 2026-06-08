@@ -15,7 +15,7 @@ import com.iptv.player.data.local.entity.PlaylistEntity
         PlaylistEntity::class,
         EpgProgramEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class MaxiTVDatabase : RoomDatabase() {

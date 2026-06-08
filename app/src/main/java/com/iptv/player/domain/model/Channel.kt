@@ -13,6 +13,8 @@ data class Channel(
     val tvgName: String? = null,
     val isFavorite: Boolean = false,
     val playlistId: Long = 0,
+    val userAgent: String? = null,  // 自定义 User-Agent
+    val httpReferer: String? = null,  // 自定义 Referer
     // EPG 相关
     val currentProgram: EpgProgram? = null,
     val nextProgram: EpgProgram? = null

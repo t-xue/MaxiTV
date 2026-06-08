@@ -87,13 +87,13 @@ fun PlayerScreen(
         AndroidView(
             factory = { ctx ->
                 PlayerView(ctx).apply {
-                    player = viewModel.uiState.value.channel?.let { null } // Player is set in ViewModel
                     useController = false // 使用自定义控制器
                     keepScreenOn = true
                 }
             },
             update = { playerView ->
-                // ExoPlayer is managed by ViewModel
+                // 将 ExoPlayer 设置到 PlayerView
+                playerView.player = viewModel.exoPlayer
             },
             modifier = Modifier.fillMaxSize()
         )

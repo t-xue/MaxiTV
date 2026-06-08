@@ -117,7 +117,9 @@ class ChannelRepository @Inject constructor(
             tvgId = tvgId,
             tvgName = tvgName,
             isFavorite = isFavorite,
-            playlistId = playlistId
+            playlistId = playlistId,
+            userAgent = userAgent,
+            httpReferer = httpReferer
         )
     }
 }

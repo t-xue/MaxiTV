@@ -33,7 +33,7 @@ data class PlayerUiState(
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val exoPlayer: ExoPlayer,
+    val exoPlayer: ExoPlayer,  // 改为 public，供 PlayerView 使用
     private val channelRepository: ChannelRepository,
     private val epgRepository: EpgRepository
 ) : ViewModel() {
@@ -108,8 +108,34 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun playChannel(channel: Channel) {
-        val mediaItem = MediaItem.fromUri(channel.url)
-        exoPlayer.setMediaItem(mediaItem)
+        // 构建 MediaItem，添加自定义请求头
+        val mediaItem = MediaItem.Builder()
+            .setUri(channel.url)
+            .setCustomCacheKey(channel.url)  // 使用 URL 作为缓存键
+            .build()
+
+        // 停止当前播放
+        exoPlayer.stop()
+
+        // 如果有自定义 User-Agent，需要设置请求头
+        if (channel.userAgent != null || channel.httpReferer != null) {
+            // 创建带有自定义请求头的 DataSourceFactory
+            val headers = mutableMapOf<String, String>()
+            channel.userAgent?.let { headers["User-Agent"] = it }
+            channel.httpReferer?.let { headers["Referer"] = it }
+
+            val dataSourceFactory = androidx.media3.datasource.DefaultHttpDataSource.Factory()
+                .setUserAgent(channel.userAgent ?: "MaxiTV/1.0")
+                .setDefaultRequestProperties(headers)
+
+            val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(dataSourceFactory)
+
+            // 使用新的 MediaSourceFactory
+            exoPlayer.setMediaSource(mediaSourceFactory.createMediaSource(mediaItem))
+        } else {
+            exoPlayer.setMediaItem(mediaItem)
+        }
+
         exoPlayer.prepare()
         exoPlayer.play()
 
@@ -205,6 +231,8 @@ class PlayerViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        exoPlayer.release()
+        // 不释放 ExoPlayer（它是单例），只停止播放
+        exoPlayer.stop()
+        exoPlayer.clearMediaItems()
     }
 }

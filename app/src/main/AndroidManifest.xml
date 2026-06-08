@@ -29,6 +29,17 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
 
+        <!-- 移除默认的 WorkManagerInitializer，使用 Hilt 按需初始化 -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="remove">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup" />
+        </provider>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
