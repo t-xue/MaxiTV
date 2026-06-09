@@ -1,5 +1,8 @@
 package com.iptv.player.ui.settings
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +23,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SettingsBrightness
@@ -49,10 +53,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.iptv.player.domain.model.Playlist
+import com.iptv.player.ui.components.AppTitle
 import com.iptv.player.ui.theme.Accent
 import com.iptv.player.ui.theme.Primary
 import com.iptv.player.ui.theme.ThemeMode
@@ -65,7 +71,21 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsState()
     val themeMode by viewModel.themeMode.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
     var showImportDialog by remember { mutableStateOf(false) }
+
+    // 本地文件选择器
+    val localFileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { selectedUri ->
+            // 文件内容读取
+            val content = context.contentResolver.openInputStream(selectedUri)?.bufferedReader()?.readText()
+            content?.let { m3uContent ->
+                viewModel.importFromLocalFile(m3uContent, "本地播放列表")
+            }
+        }
+    }
 
     // 显示消息
     LaunchedEffect(uiState.error, uiState.successMessage) {
@@ -88,6 +108,11 @@ fun SettingsScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // 应用标题
+            item {
+                AppTitle()
+            }
+
             // 标题
             item {
                 Text(
@@ -126,6 +151,25 @@ fun SettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("添加播放列表")
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // 从本地文件导入按钮
+                    Button(
+                        onClick = { localFileLauncher.launch("*/*") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FolderOpen,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("从本地文件导入")
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))

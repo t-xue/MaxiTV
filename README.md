@@ -146,7 +146,7 @@ app/src/main/java/com/iptv/player/
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
-| [v1.0.0](https://github.com/t-xue/MaxiTV/releases/tag/v1.0.0) | 2024-06-08 | 首个正式版本，包含核心播放、收藏、EPG 功能 |
+| [v1.0.0](https://github.com/t-xue/MaxiTV/releases/tag/v1.0.0) | 2026-06-08 | 首个正式版本，包含核心播放、收藏、EPG 功能 |
 
 详细发布说明请查看 [RELEASE_NOTES.md](RELEASE_NOTES.md)
 

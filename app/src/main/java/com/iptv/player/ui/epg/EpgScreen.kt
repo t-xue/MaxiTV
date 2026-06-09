@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.iptv.player.domain.model.EpgProgram
+import com.iptv.player.ui.components.AppTitle
 import com.iptv.player.ui.theme.EpgNowPlaying
 import com.iptv.player.ui.theme.Primary
 import java.time.LocalDate
@@ -58,6 +59,9 @@ fun EpgScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        // 应用标题
+        AppTitle()
+
         // 标题和日期选择
         Column(
             modifier = Modifier.padding(16.dp)

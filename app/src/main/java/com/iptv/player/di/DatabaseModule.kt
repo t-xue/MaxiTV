@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.iptv.player.data.local.MaxiTVDatabase
 import com.iptv.player.data.local.dao.ChannelDao
+import com.iptv.player.data.local.dao.CustomChannelDao
 import com.iptv.player.data.local.dao.EpgDao
 import com.iptv.player.data.local.dao.PlaylistDao
 import dagger.Module
@@ -42,5 +43,10 @@ object DatabaseModule {
     @Provides
     fun provideEpgDao(database: MaxiTVDatabase): EpgDao {
         return database.epgDao()
+    }
+
+    @Provides
+    fun provideCustomChannelDao(database: MaxiTVDatabase): CustomChannelDao {
+        return database.customChannelDao()
     }
 }

@@ -89,6 +89,30 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
+     * 从本地文件导入播放列表
+     */
+    fun importFromLocalFile(content: String, name: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            val result = playlistRepository.importFromContent(content, name)
+            result.fold(
+                onSuccess = { count ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        successMessage = "导入成功，共 $count 个频道"
+                    )
+                },
+                onFailure = { exception ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = exception.message ?: "导入失败"
+                    )
+                }
+            )
+        }
+    }
+
+    /**
      * 刷新播放列表
      */
     fun refreshPlaylist(playlistId: Long) {

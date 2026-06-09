@@ -1,5 +1,7 @@
 package com.iptv.player.ui.player
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,8 +27,10 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.ScreenRotation
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.filled.StayCurrentLandscape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +41,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +56,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.iptv.player.ui.theme.Accent
 import com.iptv.player.ui.theme.PlayerOverlay
@@ -63,6 +70,11 @@ fun PlayerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    var isLandscape by remember { mutableStateOf(false) }
+
+    // 检测当前屏幕方向
+    val configuration = context.resources.configuration
+    val isPortrait = configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
 
     Box(
         modifier = Modifier
@@ -89,11 +101,23 @@ fun PlayerScreen(
                 PlayerView(ctx).apply {
                     useController = false // 使用自定义控制器
                     keepScreenOn = true
+                    // 竖屏时使用 FIT 保持原始比例，横屏时使用 ZOOM 填满屏幕
+                    resizeMode = if (isPortrait) {
+                        androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    } else {
+                        androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
                 }
             },
             update = { playerView ->
                 // 将 ExoPlayer 设置到 PlayerView
                 playerView.player = viewModel.exoPlayer
+                // 更新 resize mode
+                playerView.resizeMode = if (isPortrait) {
+                    androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
+                } else {
+                    androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                }
             },
             modifier = Modifier.fillMaxSize()
         )
@@ -130,7 +154,7 @@ fun PlayerScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 48.dp),
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -160,6 +184,22 @@ fun PlayerScreen(
                         },
                         contentDescription = "收藏",
                         tint = if (uiState.channel?.isFavorite == true) Accent else Color.White
+                    )
+                }
+
+                IconButton(onClick = {
+                    isLandscape = !isLandscape
+                    val activity = context as? Activity
+                    activity?.requestedOrientation = if (isLandscape) {
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    } else {
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    }
+                }) {
+                    Icon(
+                        imageVector = if (isLandscape) Icons.Default.ScreenRotation else Icons.Default.StayCurrentLandscape,
+                        contentDescription = if (isLandscape) "竖屏" else "横屏",
+                        tint = Color.White
                     )
                 }
             }

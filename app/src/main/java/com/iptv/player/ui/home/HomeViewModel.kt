@@ -3,6 +3,7 @@ package com.iptv.player.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iptv.player.data.repository.ChannelRepository
+import com.iptv.player.data.repository.CustomChannelRepository
 import com.iptv.player.data.repository.PlaylistRepository
 import com.iptv.player.domain.model.Channel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,13 +21,15 @@ data class HomeUiState(
     val searchQuery: String = "",
     val isLoading: Boolean = true,
     val error: String? = null,
-    val showImportDialog: Boolean = false
+    val showImportDialog: Boolean = false,
+    val showAddChannelDialog: Boolean = false
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val channelRepository: ChannelRepository,
-    private val playlistRepository: PlaylistRepository
+    private val playlistRepository: PlaylistRepository,
+    private val customChannelRepository: CustomChannelRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -44,25 +47,40 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 channelRepository.getAllChannels(),
+                customChannelRepository.getAllChannels(),
                 _searchQuery,
                 _selectedGroup
-            ) { channels, query, group ->
-                var filtered = channels
+            ) { playlistChannels, customChannels, query, group ->
+                // 将自定义频道转换为 Channel 模型并合并
+                val customChannelList = customChannels.map { custom ->
+                    Channel(
+                        id = custom.id + 1000000, // 使用偏移量避免 ID 冲突
+                        name = custom.name,
+                        url = custom.url,
+                        logo = custom.logo,
+                        group = custom.group ?: "自定义频道",
+                        isFavorite = false,
+                        playlistId = -1 // 标记为自定义频道
+                    )
+                }
+
+                // 合并频道列表（自定义频道在前）
+                var allChannels = customChannelList + playlistChannels
 
                 // 按分组筛选
                 if (group != null) {
-                    filtered = filtered.filter { it.group == group }
+                    allChannels = allChannels.filter { it.group == group }
                 }
 
                 // 按搜索词筛选
                 if (query.isNotBlank()) {
-                    filtered = filtered.filter {
+                    allChannels = allChannels.filter {
                         it.name.contains(query, ignoreCase = true) ||
                         it.group?.contains(query, ignoreCase = true) == true
                     }
                 }
 
-                filtered
+                allChannels
             }.collect { filteredChannels ->
                 _uiState.value = _uiState.value.copy(
                     channels = filteredChannels,
@@ -74,7 +92,14 @@ class HomeViewModel @Inject constructor(
 
     private fun loadGroups() {
         viewModelScope.launch {
-            channelRepository.getAllGroups().collect { groups ->
+            combine(
+                channelRepository.getAllGroups(),
+                customChannelRepository.getAllChannels()
+            ) { playlistGroups, customChannels ->
+                val customGroups = customChannels.mapNotNull { it.group }.distinct()
+                val allGroups = (customGroups + playlistGroups).distinct()
+                allGroups
+            }.collect { groups ->
                 _uiState.value = _uiState.value.copy(groups = groups)
             }
         }
@@ -166,6 +191,36 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             )
+        }
+    }
+
+    /**
+     * 显示添加频道对话框
+     */
+    fun showAddChannelDialog() {
+        _uiState.value = _uiState.value.copy(showAddChannelDialog = true)
+    }
+
+    /**
+     * 隐藏添加频道对话框
+     */
+    fun hideAddChannelDialog() {
+        _uiState.value = _uiState.value.copy(showAddChannelDialog = false)
+    }
+
+    /**
+     * 添加自定义频道
+     */
+    fun addCustomChannel(name: String, url: String) {
+        viewModelScope.launch {
+            try {
+                customChannelRepository.insertChannel(name = name, url = url)
+                _uiState.value = _uiState.value.copy(showAddChannelDialog = false)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    error = e.message ?: "添加频道失败"
+                )
+            }
         }
     }
 

@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.iptv.player.domain.model.Channel
+import com.iptv.player.ui.components.AppTitle
 import com.iptv.player.ui.theme.FavoriteActive
 import com.iptv.player.ui.theme.Primary
 
@@ -79,12 +80,12 @@ fun HomeScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { viewModel.showImportDialog() },
+                onClick = { viewModel.showAddChannelDialog() },
                 containerColor = Primary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "导入播放列表",
+                    contentDescription = "添加自定义频道",
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -96,6 +97,9 @@ fun HomeScreen(
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
         ) {
+            // 应用标题
+            AppTitle()
+
             // 搜索栏
             SearchBar(
                 query = uiState.searchQuery,
@@ -143,6 +147,14 @@ fun HomeScreen(
             onDismiss = { viewModel.hideImportDialog() },
             onImportUrl = { viewModel.importFromUrl(it) },
             onImportContent = { content, name -> viewModel.importFromContent(content, name) }
+        )
+    }
+
+    // 添加自定义频道对话框
+    if (uiState.showAddChannelDialog) {
+        AddChannelDialog(
+            onDismiss = { viewModel.hideAddChannelDialog() },
+            onAdd = { name, url -> viewModel.addCustomChannel(name, url) }
         )
     }
 }

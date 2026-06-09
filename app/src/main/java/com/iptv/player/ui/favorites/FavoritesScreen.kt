@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.iptv.player.domain.model.Channel
+import com.iptv.player.ui.components.AppTitle
 import com.iptv.player.ui.theme.FavoriteActive
 
 @Composable
@@ -52,6 +53,9 @@ fun FavoritesScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        // 应用标题
+        AppTitle()
+
         // 标题
         Text(
             text = "收藏频道",
