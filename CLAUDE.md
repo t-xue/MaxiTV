@@ -1,56 +1,93 @@
-# MaxiTV 프로젝트 가이드
+# CLAUDE.md
 
-## 프로젝트 개요
-MaxiTV는 Android IPTV 플레이어 앱입니다. Kotlin + Jetpack Compose + MVVM 아키텍처를 사용합니다.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 기술 스택
-- **언어**: Kotlin 2.0
-- **UI**: Jetpack Compose + Material 3
-- **아키텍처**: MVVM + Clean Architecture
-- **데이터**: Room + DataStore
-- **DI**: Hilt
-- **비동기**: Coroutines + Flow
+## Build Commands
 
-## 하네스: MaxiTV 기능 개발
-
-**목표:** MaxiTV 앱의 새 기능 개발을 에이전트 팀으로 조율
-
-**트리거:** "기능 추가", "새 기능", "채널 추가", "로컬 파일", "앱 이름", "개발" 등의 키워드로 `maxitv-feature-dev` 스킬을 사용하라. 단순 질문은 직접 응답 가능.
-
-**변경 이력:**
-| 날짜 | 변경 내용 | 대상 | 사유 |
-|------|----------|------|------|
-| 2024-06-08 | 초기 구성 | 전체 | 하네스 구축 |
-
-## 프로젝트 구조
-```
-app/src/main/java/com/iptv/player/
-├── MaxiTVApp.kt          # Application
-├── MainActivity.kt        # Main Activity
-├── di/                    # 의존성 주입
-├── data/                  # 데이터 레이어
-│   ├── local/             # Room DB
-│   ├── remote/            # 네트워크
-│   ├── parser/            # M3U/XMLTV 파서
-│   └── repository/        # Repository
-├── domain/model/          # 도메인 모델
-├── ui/                    # UI 레이어
-│   ├── home/              # 홈 화면
-│   ├── player/            # 플레이어
-│   ├── favorites/         # 즐겨찾기
-│   ├── epg/               # EPG
-│   └── settings/          # 설정
-└── worker/                # 백그라운드 작업
-```
-
-## 빌드 명령어
 ```bash
-# 디버그 빌드
+# Debug build
 ./gradlew assembleDebug
 
-# 릴리스 빌드
+# Release build
 ./gradlew assembleRelease
 
-# 테스트
+# Run all tests
 ./gradlew test
+
+# Run unit tests only
+./gradlew testDebugUnitTest
+
+# Clean build
+./gradlew clean assembleDebug
+
+# Lint check
+./gradlew lint
 ```
+
+Output APK: `app/build/outputs/apk/debug/app-debug.apk`
+
+## Tech Stack
+
+- **Language**: Kotlin 2.0, JDK 17
+- **UI**: Jetpack Compose + Material 3 (dark theme default)
+- **Architecture**: MVVM + Clean Architecture
+- **Player**: AndroidX Media3 ExoPlayer 1.5
+- **Database**: Room 2.6
+- **DI**: Hilt 2.50
+- **Network**: Retrofit + OkHttp
+- **Async**: Kotlin Coroutines + Flow
+
+## Architecture
+
+The app follows Clean Architecture with three layers:
+
+```
+ui/ → domain/model/ ← data/
+(ViewModels)          (Repositories → DAOs → Database)
+```
+
+**Data flow**: UI (Compose) → ViewModel → Repository → Room/Retrofit
+
+### Key Patterns
+
+- **DI Modules** (`di/`): `AppModule` (ExoPlayer, ThemeManager), `DatabaseModule` (Room), `NetworkModule` (Retrofit)
+- **Database** (`data/local/`): `MaxiTVDatabase` (version 3) with 4 entities: `ChannelEntity`, `PlaylistEntity`, `EpgProgramEntity`, `CustomChannelEntity`
+- **Parsers** (`data/parser/`): `M3uParser` for playlist import, `XmlTvParser` for EPG data
+- **Repositories** (`data/repository/`): Abstract data sources, combine local DB with remote API
+
+### Channel System
+
+Two independent channel sources:
+1. **Playlist channels** (`ChannelEntity`): Imported from M3U URLs, stored via `ChannelRepository`
+2. **Custom channels** (`CustomChannelEntity`): Manually added one-by-one, stored via `CustomChannelRepository`
+
+Custom channels use ID offset (+1000000) to avoid conflicts with playlist channels in the UI layer.
+
+### Player Architecture
+
+- `ExoPlayer` is a singleton provided by `AppModule`
+- `PlayerViewModel` handles playback and channel switching
+- Custom User-Agent/Referer headers are set per-channel for streams that require them
+- URL encoding uses `java.net.URI` for Chinese characters
+- Portrait: `RESIZE_MODE_FIT`, Landscape: `RESIZE_MODE_ZOOM`
+
+### Theme System
+
+`ThemeManager` uses DataStore to persist theme preference (SYSTEM/LIGHT/DARK). `MainActivity` reads the Flow and passes to `MaxiTVTheme`.
+
+## Android SDK Setup
+
+The project requires Android SDK. Set `sdk.dir` in `local.properties` or `ANDROID_HOME` environment variable.
+
+SDK components needed:
+```
+platforms;android-35
+build-tools;35.0.0
+platform-tools
+```
+
+## Common Issues
+
+- **Build fails with SDK not found**: Create `local.properties` with `sdk.dir=C:\\android-sdk` (or your SDK path)
+- **WorkManager initializer error**: The manifest uses Hilt's `Configuration.Provider`, so the default `InitializationProvider` must be removed with `tools:node="remove"`
+- **Chinese URLs fail to play**: Ensure URL encoding via `java.net.URI.toASCIIString()`
