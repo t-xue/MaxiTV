@@ -2,6 +2,12 @@
 
 <div align="center">
 
+[English](README_EN.md) | 中文
+
+</div>
+
+<div align="center">
+
 **一个简洁、现代的 Android IPTV 播放器**
 
 [![Version](https://img.shields.io/badge/Version-1.1.0-blue.svg)](https://github.com/t-xue/MaxiTV/releases/tag/v1.1.0)
