@@ -4,7 +4,7 @@
 
 **一个简洁、现代的 Android IPTV 播放器**
 
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/t-xue/MaxiTV/releases/tag/v1.0.0)
+[![Version](https://img.shields.io/badge/Version-1.1.0-blue.svg)](https://github.com/t-xue/MaxiTV/releases/tag/v1.1.0)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-green.svg)](https://developer.android.com/about/versions/oreo)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-blue.svg)](https://kotlinlang.org/)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-2024.12-purple.svg)](https://developer.android.com/jetpack/compose)
@@ -146,6 +146,7 @@ app/src/main/java/com/iptv/player/
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| [v1.1.0](https://github.com/t-xue/MaxiTV/releases/tag/v1.1.0) | 2026-06-09 | 新增自定义频道、本地文件导入、横屏切换功能 |
 | [v1.0.0](https://github.com/t-xue/MaxiTV/releases/tag/v1.0.0) | 2026-06-08 | 首个正式版本，包含核心播放、收藏、EPG 功能 |
 
 详细发布说明请查看 [RELEASE_NOTES.md](RELEASE_NOTES.md)
